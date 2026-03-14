@@ -1,15 +1,15 @@
 {
-  "name": "20k-10mil-challenge",
-  "version": "1.0.0",
-  "description": "",
+  "name": "tradevault",
+  "version": "3.1.0",
+  "description": "Mobile-first trading risk dashboard with 2/3 Power Decay position sizing. Track trades from $20K to $10M.",
   "main": "index.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["trading", "risk-management", "position-sizing", "dashboard", "react", "vite"],
+  "author": "Talfishman1996",
   "license": "ISC",
   "type": "module",
   "dependencies": {

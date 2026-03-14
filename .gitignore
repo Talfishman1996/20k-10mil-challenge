@@ -4,3 +4,10 @@ dist/
 *.local
 .DS_Store
 Thumbs.db
+
+# Temp artifacts
+*.png
+*.backup
+*.gpt54*
+screenshots.json
+liquid-glass-nav.html
