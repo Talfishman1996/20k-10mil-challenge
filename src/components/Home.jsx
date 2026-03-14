@@ -25,47 +25,47 @@ const CAMP_NAMES = ['Base Camp', 'Camp I', 'Camp II', 'Camp III', 'High Camp', '
 */
 
 // Trail segment paths between milestones (6 segments for perspective taper)
-// Segment 0: Start (195,395) → $100K (280,345) — wide right swing
-// Segment 1: $100K (280,345) → $250K (110,300) — wide left swing
-// Segment 2: $250K (110,300) → $500K (275,258) — medium right swing
-// Segment 3: $500K (275,258) → $1M (130,218) — medium left swing
-// Segment 4: $1M (130,218) → $5M (250,165) — narrow right swing
-// Segment 5: $5M (250,165) → $10M (195,95) — narrow center approach
+// Segment 0: Start (195,385) → $100K (275,305) — wide right swing
+// Segment 1: $100K (275,305) → $250K (120,275) — wide left swing
+// Segment 2: $250K (120,275) → $500K (272,230) — medium right swing
+// Segment 3: $500K (272,230) → $1M (167,185) — medium left swing
+// Segment 4: $1M (167,185) → $5M (218,132) — narrow right swing
+// Segment 5: $5M (218,132) → $10M (195,82) — narrow center approach
 
 const TRAIL_SEGMENTS = [
   {
     // Start → $100K (bottom, widest, thickest — reduced curvature for cleaner ascent feel)
-    path: 'M 195 385 C 228 378, 278 362, 300 348 C 318 336, 302 326, 285 325',
+    path: 'M 195 385 C 228 370, 268 342, 290 328 C 306 318, 292 308, 275 305',
     strokeWidth: 5.5,
     glowWidth: 10,
   },
   {
     // $100K → $250K (tighter left swing — less racetrack, more ascent)
-    path: 'M 285 325 C 248 316, 168 300, 118 288 C 82 280, 88 276, 108 275',
+    path: 'M 275 305 C 240 296, 170 284, 130 276 C 100 270, 104 272, 120 275',
     strokeWidth: 5.5,
     glowWidth: 9.5,
   },
   {
     // $250K → $500K (medium right swing — slightly reduced)
-    path: 'M 108 275 C 148 268, 232 254, 268 244 C 296 237, 286 231, 272 230',
+    path: 'M 120 275 C 158 268, 232 254, 268 244 C 296 237, 286 231, 272 230',
     strokeWidth: 4.5,
     glowWidth: 8,
   },
   {
     // $500K → $1M (medium left swing, starting to narrow)
-    path: 'M 272 230 C 238 222, 176 210, 148 199 C 122 190, 130 186, 145 185',
+    path: 'M 272 230 C 240 222, 200 210, 178 199 C 156 192, 158 186, 167 185',
     strokeWidth: 3.5,
     glowWidth: 6.5,
   },
   {
     // $1M → $5M (noticeably narrower right swing)
-    path: 'M 145 185 C 172 178, 220 166, 244 154 C 262 144, 254 139, 242 138',
+    path: 'M 167 185 C 186 178, 210 164, 222 150 C 232 140, 226 134, 218 132',
     strokeWidth: 2.5,
     glowWidth: 4.5,
   },
   {
     // $5M → $10M summit (thinnest, tightest approach)
-    path: 'M 242 138 C 228 128, 214 114, 206 102 C 201 94, 198 88, 195 82',
+    path: 'M 218 132 C 212 122, 206 112, 202 100 C 199 92, 197 86, 195 82',
     strokeWidth: 1.6,
     glowWidth: 3,
   },
@@ -76,11 +76,11 @@ const TRAIL_PATH = TRAIL_SEGMENTS.map(s => s.path).join(' ');
 
 // Trail milestones ($100K–$5M) — positioned on the compressed trail switchbacks
 const TRAIL_MILESTONES = [
-  { label: '$100K', camp: 'Base Camp', value: 100000,   x: 285, y: 325, labelSide: 'left' },
-  { label: '$250K', camp: 'Camp I',    value: 250000,   x: 108, y: 275, labelSide: 'right' },
-  { label: '$500K', camp: 'Camp II',   value: 500000,   x: 272, y: 230, labelSide: 'left' },
-  { label: '$1M',   camp: 'Camp III',  value: 1000000,  x: 145, y: 185, labelSide: 'right' },
-  { label: '$5M',   camp: 'Camp IV',   value: 5000000,  x: 242, y: 138, labelSide: 'left' },
+  { label: '$100K', camp: 'Base Camp', value: 100000,   x: 275, y: 305, labelSide: 'right' },
+  { label: '$250K', camp: 'Camp I',    value: 250000,   x: 120, y: 275, labelSide: 'left' },
+  { label: '$500K', camp: 'Camp II',   value: 500000,   x: 272, y: 230, labelSide: 'right' },
+  { label: '$1M',   camp: 'Camp III',  value: 1000000,  x: 167, y: 185, labelSide: 'left' },
+  { label: '$5M',   camp: 'Camp IV',   value: 5000000,  x: 218, y: 132, labelSide: 'right' },
 ];
 
 // $10M summit — massive golden text above temple
@@ -125,42 +125,7 @@ function getPlayerPosition(eq) {
   return { x: 195, y: 385, t: 0 };
 }
 
-/* ───────────────────────────────────────────
-   Climber SVG silhouette
-   ─────────────────────────────────────────── */
 
-const HikerAvatar = ({ x, y }) => {
-  // Minimal stick-figure hiker with backpack + trekking pole
-  // Rendered as inline SVG paths — crisp at any size, ~30px tall
-  const s = 1.0; // scale factor
-  const h = 30 * s; // total figure height
-  const ox = x - 4 * s; // offset so figure is centered on trail point
-  const oy = y - h / 2; // vertical center on player position
-  return (
-    <g>
-      {/* Contact shadow under hiker */}
-      <ellipse cx={x} cy={y + h * 0.52} rx={8 * s} ry={2.5 * s} fill="rgba(0,0,0,0.22)" />
-      {/* Head */}
-      <circle cx={ox + 5 * s} cy={oy + 3.5 * s} r={3.5 * s} fill="rgba(255,255,255,0.92)" />
-      {/* Body */}
-      <path d={`M${ox + 2.5 * s} ${oy + 7 * s} L${ox + 7.5 * s} ${oy + 7 * s} L${ox + 7 * s} ${oy + 17 * s} L${ox + 2 * s} ${oy + 17 * s} Z`} fill="rgba(255,255,255,0.90)" />
-      {/* Backpack — gold accent */}
-      <rect x={ox - 2 * s} y={oy + 7.5 * s} width={5 * s} height={8.5 * s} rx={1.2 * s} fill="rgba(255,215,0,0.85)" />
-      {/* Left leg (back, extended) */}
-      <path d={`M${ox + 2 * s} ${oy + 17 * s} L${ox - 3 * s} ${oy + 27 * s} L${ox - 1 * s} ${oy + 27 * s} L${ox + 4 * s} ${oy + 17 * s} Z`} fill="rgba(255,255,255,0.90)" />
-      {/* Left foot */}
-      <rect x={ox - 4.5 * s} y={oy + 25.5 * s} width={4 * s} height={2 * s} rx={0.8 * s} fill="rgba(255,255,255,0.88)" />
-      {/* Right leg (front, stepping) */}
-      <path d={`M${ox + 5 * s} ${oy + 17 * s} L${ox + 9 * s} ${oy + 27 * s} L${ox + 11 * s} ${oy + 27 * s} L${ox + 7.5 * s} ${oy + 17 * s} Z`} fill="rgba(255,255,255,0.90)" />
-      {/* Right foot */}
-      <rect x={ox + 8 * s} y={oy + 25.5 * s} width={4 * s} height={2 * s} rx={0.8 * s} fill="rgba(255,255,255,0.88)" />
-      {/* Right arm holding trekking pole */}
-      <path d={`M${ox + 7 * s} ${oy + 8 * s} L${ox + 10 * s} ${oy + 14 * s} L${ox + 8.5 * s} ${oy + 15 * s} L${ox + 6 * s} ${oy + 9.5 * s} Z`} fill="rgba(255,255,255,0.88)" />
-      {/* Trekking pole */}
-      <line x1={ox + 10 * s} y1={oy + 13 * s} x2={ox + 13 * s} y2={oy + 27 * s} stroke="rgba(255,255,255,0.75)" strokeWidth={1.2 * s} strokeLinecap="round" />
-    </g>
-  );
-};
 
 /* ───────────────────────────────────────────
    Campfire icon (small flame SVG)
@@ -214,9 +179,8 @@ function RiskGauge({ riskPct, riskDol }) {
    ─────────────────────────────────────────── */
 
 function MountainTrail({ summitData, eq }) {
+  // Compute how far along (0→1) the trail is completed for each segment
   const player = useMemo(() => getPlayerPosition(eq), [eq]);
-
-  // Compute how far along (0→1) the player is for each segment
   const totalSegments = TRAIL_SEGMENTS.length;
   const playerSegIdx = Math.floor(player.t * totalSegments);
   const playerSegFrac = (player.t * totalSegments) - playerSegIdx;
@@ -342,13 +306,6 @@ function MountainTrail({ summitData, eq }) {
           <text x="195" y="78" textAnchor="middle" fontFamily="'Cinzel', 'Inter Tight', Georgia, serif" fontSize="48" fontWeight="900" letterSpacing="1.8">$10M</text>
         </clipPath>
 
-        {/* Radial glow for player pos — green tinted, subtle */}
-        <radialGradient id="campfireRadial" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#00e5cc" stopOpacity="0.25" />
-          <stop offset="60%" stopColor="#00e5cc" stopOpacity="0.08" />
-          <stop offset="100%" stopColor="#00e5cc" stopOpacity="0" />
-        </radialGradient>
-
         {/* Summit radiance gradient — warm golden */}
         <radialGradient id="summitRadiance" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#ffd700" stopOpacity="0.35" />
@@ -472,7 +429,7 @@ function MountainTrail({ summitData, eq }) {
         const isNext = mData?.isNext;
         const is100k = ms.label === '$100K';
         const delay = 0.4 + i * 0.18;
-        const pillX = ms.labelSide === 'right' ? ms.x + 14 : ms.x - 14;
+        const pillX = ms.labelSide === 'right' ? ms.x + 20 : ms.x - 20;
         const anchor = ms.labelSide === 'right' ? 'start' : 'end';
         // Force $100K to always be visible (persistent milestone)
         const forceVisible = is100k && achieved;
@@ -490,13 +447,13 @@ function MountainTrail({ summitData, eq }) {
               <>
                 <circle
                   cx={ms.x} cy={ms.y} r={8}
-                  fill="none" stroke="#00e5cc" strokeWidth={1}
+                  fill="none" stroke="#4AE8D4" strokeWidth={1}
                   opacity={0.3}
                   className="ring-pulse"
                 />
                 <circle
                   cx={ms.x} cy={ms.y} r={4}
-                  fill="#00e5cc" opacity={0.1}
+                  fill="#4AE8D4" opacity={0.08}
                   filter="url(#tealPulse)"
                 />
               </>
@@ -506,8 +463,8 @@ function MountainTrail({ summitData, eq }) {
             <circle
               cx={ms.x} cy={ms.y}
               r={achieved ? 5.5 : isNext ? 5.5 : 4}
-              fill={achieved ? '#FFD700' : isNext ? '#00e5cc' : 'none'}
-              stroke={achieved ? '#FFD700' : isNext ? '#00e5cc' : '#7a8a9c'}
+              fill={achieved ? '#FFD700' : isNext ? '#4AE8D4' : 'none'}
+              stroke={achieved ? '#FFD700' : isNext ? '#4AE8D4' : '#7a8a9c'}
               strokeWidth={achieved ? 0 : isNext ? 1.2 : 1}
               opacity={achieved ? 0.9 : isNext ? 0.85 : 0.4}
             />
@@ -522,23 +479,24 @@ function MountainTrail({ summitData, eq }) {
             )}
 
             {/* ── Compact pill label ── */}
-            <g opacity={!achieved && !isNext ? 0.45 : forceVisible ? 0.85 : 1}>
+            <g opacity={!achieved && !isNext ? 0.38 : forceVisible ? 0.85 : 1}>
               {/* Pill background — higher contrast */}
               <rect
-                x={ms.labelSide === 'right' ? ms.x + 12 : ms.x - 88}
+                x={ms.labelSide === 'right' ? ms.x + 16 : ms.x - 92}
                 y={ms.y - 16}
                 width={76}
                 height={32}
                 rx={8}
-                fill={achieved ? 'rgba(27,18,2,0.86)' : isNext ? 'rgba(4,26,24,0.86)' : 'rgba(10,14,22,0.84)'}
-                stroke={achieved ? 'rgba(255,215,0,0.34)' : isNext ? 'rgba(0,229,204,0.36)' : 'rgba(255,255,255,0.12)'}
-                strokeWidth={0.9}
+                fill={achieved ? 'rgba(27,18,2,0.86)' : isNext ? 'rgba(8,18,22,0.88)' : 'rgba(10,14,22,0.84)'}
+                stroke={achieved ? 'rgba(255,215,0,0.34)' : isNext ? 'rgba(0,200,180,0.45)' : 'rgba(255,255,255,0.12)'}
+                strokeWidth={isNext ? 1.1 : 0.9}
+                strokeDasharray={isNext ? '3 2' : 'none'}
               />
               {/* Dollar label */}
               <text
                 x={pillX} y={ms.y - 3}
                 textAnchor={anchor}
-                fill={achieved ? '#FFD700' : isNext ? '#00e5cc' : 'rgba(255,255,255,0.7)'}
+                fill={achieved ? '#FFD700' : isNext ? '#4AE8D4' : 'rgba(255,255,255,0.55)'}
                 opacity={achieved ? 1 : isNext ? 0.95 : 0.8}
                 fontSize={14.5}
                 fontFamily="'JetBrains Mono', monospace"
@@ -548,9 +506,9 @@ function MountainTrail({ summitData, eq }) {
               <text
                 x={pillX} y={ms.y + 10.5}
                 textAnchor={anchor}
-                fill={achieved ? '#d4a560' : isNext ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.35)'}
-                opacity={achieved ? 0.7 : isNext ? 0.55 : 0.45}
-                fontSize={8.5}
+                fill={achieved ? '#d4a560' : isNext ? 'rgba(74,232,212,0.55)' : 'rgba(255,255,255,0.3)'}
+                opacity={achieved ? 0.82 : isNext ? 0.65 : 0.45}
+                fontSize={9.5}
                 fontFamily="'JetBrains Mono', monospace"
                 fontWeight={500}
                 letterSpacing="0.15"
@@ -608,24 +566,7 @@ function MountainTrail({ summitData, eq }) {
         </g>
       </motion.g>
 
-      {/* ─── PLAYER POSITION — Restrained marker on route ─── */}
-      <motion.g
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 0.6 }}
-      >
-        {/* Very subtle glow behind player — small, not distracting */}
-        <motion.circle
-          cx={player.x} cy={player.y}
-          r={10}
-          fill="url(#campfireRadial)"
-          animate={{ r: [10, 13, 10], opacity: [0.12, 0.22, 0.12] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-        />
 
-        {/* Hiker avatar — smaller, calmer */}
-        <HikerAvatar x={player.x} y={player.y} />
-      </motion.g>
     </svg>
   );
 }
@@ -813,7 +754,7 @@ export default function Home({ trades, settings, onOpenTradeEntry }) {
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to bottom, rgba(4,8,16,0.10) 0%, rgba(4,8,16,0) 20%, rgba(10,14,20,0.08) 40%, rgba(10,14,20,0.40) 65%, rgba(7,10,18,0.85) 82%, #0a0e14 100%)',
+            background: 'linear-gradient(to bottom, rgba(4,8,16,0.10) 0%, rgba(4,8,16,0) 20%, rgba(10,14,20,0.10) 38%, rgba(10,14,20,0.50) 62%, rgba(7,10,18,0.92) 78%, #0a0e14 100%)',
           }}
         />
 
