@@ -63,12 +63,7 @@ const TRAIL_SEGMENTS = [
     strokeWidth: 2.5,
     glowWidth: 4.5,
   },
-  {
-    // $5M → summit approach (thinnest — stops before temple to avoid overlay)
-    path: 'M 242 138 C 232 130, 222 122, 214 116',
-    strokeWidth: 1.6,
-    glowWidth: 3,
-  },
+
 ];
 
 // Combined full trail path (for reference / player position interpolation)
@@ -97,10 +92,10 @@ const PHASE_INFO = {
    ─────────────────────────────────────────── */
 
 function getPlayerPosition(eq) {
+  // Trail ends at $5M — no segment past it, so cap waypoints there
   const waypoints = [
     { value: 20000, x: 195, y: 385 },
     ...TRAIL_MILESTONES.map(m => ({ value: m.value, x: m.x, y: m.y })),
-    { value: 10000000, x: 195, y: 82 },
   ];
 
   if (eq <= waypoints[0].value) return { x: waypoints[0].x, y: waypoints[0].y, t: 0 };
@@ -276,21 +271,22 @@ function MountainTrail({ summitData, eq }) {
           <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
         </linearGradient>
 
-        {/* Warm halo behind $10M text */}
+        {/* Warm halo behind $10M text — feathered out wider */}
         <radialGradient id="moneyHalo" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
-          gradientTransform="translate(195 62) rotate(90) scale(46 108)">
-          <stop offset="0" stopColor="#FFF6C7" stopOpacity="0.96" />
-          <stop offset="0.22" stopColor="#FFE79A" stopOpacity="0.68" />
-          <stop offset="0.48" stopColor="#E6B95A" stopOpacity="0.30" />
-          <stop offset="0.76" stopColor="#A86B17" stopOpacity="0.10" />
+          gradientTransform="translate(195 62) rotate(90) scale(62 142)">
+          <stop offset="0" stopColor="#FFF6C7" stopOpacity="0.88" />
+          <stop offset="0.15" stopColor="#FFE79A" stopOpacity="0.62" />
+          <stop offset="0.35" stopColor="#E6B95A" stopOpacity="0.32" />
+          <stop offset="0.55" stopColor="#D4972E" stopOpacity="0.16" />
+          <stop offset="0.75" stopColor="#A86B17" stopOpacity="0.06" />
           <stop offset="1" stopColor="#A86B17" stopOpacity="0" />
         </radialGradient>
 
-        {/* $10M glow filter */}
-        <filter id="moneyGlow" x="104" y="0" width="182" height="132" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+        {/* $10M glow filter — wider feathered bloom */}
+        <filter id="moneyGlow" x="70" y="-20" width="250" height="180" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
           <feOffset dy="2" />
-          <feGaussianBlur stdDeviation="4.5" />
-          <feColorMatrix type="matrix" values="0 0 0 0 0.988 0 0 0 0 0.804 0 0 0 0 0.384 0 0 0 0.32 0" />
+          <feGaussianBlur stdDeviation="8" />
+          <feColorMatrix type="matrix" values="0 0 0 0 0.988 0 0 0 0 0.804 0 0 0 0 0.384 0 0 0 0.28 0" />
           <feBlend in2="SourceGraphic" mode="screen" />
         </filter>
 
@@ -432,8 +428,12 @@ function MountainTrail({ summitData, eq }) {
         // Per-milestone pill offset — push labels further from edges where needed
         const baseOffset = 18;
         const customOffset = ms.label === '$100K' ? 14 : ms.label === '$5M' ? 14 : baseOffset;
-        const pillX = ms.labelSide === 'right' ? ms.x + customOffset : ms.x - customOffset;
-        const anchor = ms.labelSide === 'right' ? 'start' : 'end';
+        // Center-aligned text: position at center of pill rect
+        const pillRectX = ms.labelSide === 'right'
+          ? ms.x + (ms.label === '$100K' || ms.label === '$5M' ? 10 : 14)
+          : ms.x - (ms.label === '$250K' ? 86 : ms.label === '$1M' ? 82 : 90);
+        const pillCenterX = pillRectX + 38; // 76/2 = 38 (half pill width)
+        const anchor = 'middle';
         // Vertical nudge: push $100K pill up a few px to separate from PORTFOLIO VALUE
         const pillYNudge = is100k ? -6 : 0;
         // Force $100K to always be visible (persistent milestone)
@@ -497,20 +497,20 @@ function MountainTrail({ summitData, eq }) {
                 strokeWidth={isNext ? 1.1 : 0.9}
                 strokeDasharray={isNext ? '3 2' : 'none'}
               />
-              {/* Dollar label */}
+              {/* Dollar label — center aligned */}
               <text
-                x={pillX} y={ms.y - 3 + pillYNudge}
-                textAnchor={anchor}
+                x={pillCenterX} y={ms.y - 3 + pillYNudge}
+                textAnchor="middle"
                 fill={achieved ? '#FFD700' : isNext ? '#4AE8D4' : 'rgba(255,255,255,0.55)'}
                 opacity={achieved ? 1 : isNext ? 0.95 : 0.8}
                 fontSize={14.5}
                 fontFamily="'JetBrains Mono', monospace"
                 fontWeight={700}
               >{ms.label}</text>
-              {/* Camp name — subtle */}
+              {/* Camp name — center aligned */}
               <text
-                x={pillX} y={ms.y + 10.5 + pillYNudge}
-                textAnchor={anchor}
+                x={pillCenterX} y={ms.y + 10.5 + pillYNudge}
+                textAnchor="middle"
                 fill={achieved ? '#d4a560' : isNext ? 'rgba(74,232,212,0.55)' : 'rgba(255,255,255,0.3)'}
                 opacity={achieved ? 0.82 : isNext ? 0.65 : 0.45}
                 fontSize={9.5}
@@ -538,8 +538,8 @@ function MountainTrail({ summitData, eq }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5, duration: 1, ease: 'easeOut' }}
       >
-        {/* Behind-text warm halo */}
-        <ellipse cx="195" cy="62" rx="82" ry="30" fill="url(#moneyHalo)" filter="url(#moneyGlow)" opacity="0.78" />
+        {/* Behind-text warm halo — wider feathered ellipse */}
+        <ellipse cx="195" cy="62" rx="108" ry="42" fill="url(#moneyHalo)" filter="url(#moneyGlow)" opacity="0.72" />
 
         {/* Text body with depth shadows */}
         <g filter="url(#moneyDepth)">
