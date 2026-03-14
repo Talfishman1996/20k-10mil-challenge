@@ -64,8 +64,8 @@ const TRAIL_SEGMENTS = [
     glowWidth: 4.5,
   },
   {
-    // $5M → $10M summit (thinnest, tightest approach)
-    path: 'M 242 138 C 228 128, 214 114, 206 102 C 201 94, 198 88, 195 82',
+    // $5M → summit approach (thinnest — stops before temple to avoid overlay)
+    path: 'M 242 138 C 232 130, 222 122, 214 116',
     strokeWidth: 1.6,
     glowWidth: 3,
   },
@@ -431,10 +431,11 @@ function MountainTrail({ summitData, eq }) {
         const delay = 0.4 + i * 0.18;
         // Per-milestone pill offset — push labels further from edges where needed
         const baseOffset = 18;
-        // Custom offsets: $100K needs less right push (near right edge), $250K less left
         const customOffset = ms.label === '$100K' ? 14 : ms.label === '$5M' ? 14 : baseOffset;
         const pillX = ms.labelSide === 'right' ? ms.x + customOffset : ms.x - customOffset;
         const anchor = ms.labelSide === 'right' ? 'start' : 'end';
+        // Vertical nudge: push $100K pill up a few px to separate from PORTFOLIO VALUE
+        const pillYNudge = is100k ? -6 : 0;
         // Force $100K to always be visible (persistent milestone)
         const forceVisible = is100k && achieved;
 
@@ -487,7 +488,7 @@ function MountainTrail({ summitData, eq }) {
               {/* Pill background — higher contrast */}
               <rect
                 x={ms.labelSide === 'right' ? ms.x + (ms.label === '$100K' || ms.label === '$5M' ? 10 : 14) : ms.x - (ms.label === '$250K' ? 86 : ms.label === '$1M' ? 82 : 90)}
-                y={ms.y - 16}
+                y={ms.y - 16 + pillYNudge}
                 width={76}
                 height={32}
                 rx={8}
@@ -498,7 +499,7 @@ function MountainTrail({ summitData, eq }) {
               />
               {/* Dollar label */}
               <text
-                x={pillX} y={ms.y - 3}
+                x={pillX} y={ms.y - 3 + pillYNudge}
                 textAnchor={anchor}
                 fill={achieved ? '#FFD700' : isNext ? '#4AE8D4' : 'rgba(255,255,255,0.55)'}
                 opacity={achieved ? 1 : isNext ? 0.95 : 0.8}
@@ -508,7 +509,7 @@ function MountainTrail({ summitData, eq }) {
               >{ms.label}</text>
               {/* Camp name — subtle */}
               <text
-                x={pillX} y={ms.y + 10.5}
+                x={pillX} y={ms.y + 10.5 + pillYNudge}
                 textAnchor={anchor}
                 fill={achieved ? '#d4a560' : isNext ? 'rgba(74,232,212,0.55)' : 'rgba(255,255,255,0.3)'}
                 opacity={achieved ? 0.82 : isNext ? 0.65 : 0.45}
