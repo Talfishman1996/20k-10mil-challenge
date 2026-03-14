@@ -25,47 +25,47 @@ const CAMP_NAMES = ['Base Camp', 'Camp I', 'Camp II', 'Camp III', 'High Camp', '
 */
 
 // Trail segment paths between milestones (6 segments for perspective taper)
-// Segment 0: Start (195,385) → $100K (275,305) — wide right swing
-// Segment 1: $100K (275,305) → $250K (120,275) — wide left swing
-// Segment 2: $250K (120,275) → $500K (272,230) — medium right swing
-// Segment 3: $500K (272,230) → $1M (167,185) — medium left swing
-// Segment 4: $1M (167,185) → $5M (218,132) — narrow right swing
-// Segment 5: $5M (218,132) → $10M (195,82) — narrow center approach
+// Segment 0: Start (195,395) → $100K (280,345) — wide right swing
+// Segment 1: $100K (280,345) → $250K (110,300) — wide left swing
+// Segment 2: $250K (110,300) → $500K (275,258) — medium right swing
+// Segment 3: $500K (275,258) → $1M (130,218) — medium left swing
+// Segment 4: $1M (130,218) → $5M (250,165) — narrow right swing
+// Segment 5: $5M (250,165) → $10M (195,95) — narrow center approach
 
 const TRAIL_SEGMENTS = [
   {
     // Start → $100K (bottom, widest, thickest — reduced curvature for cleaner ascent feel)
-    path: 'M 195 385 C 228 370, 268 342, 290 328 C 306 318, 292 308, 275 305',
+    path: 'M 195 385 C 228 378, 278 362, 300 348 C 318 336, 302 326, 285 325',
     strokeWidth: 5.5,
     glowWidth: 10,
   },
   {
     // $100K → $250K (tighter left swing — less racetrack, more ascent)
-    path: 'M 275 305 C 240 296, 170 284, 130 276 C 100 270, 104 272, 120 275',
+    path: 'M 285 325 C 248 316, 168 300, 118 288 C 82 280, 88 276, 108 275',
     strokeWidth: 5.5,
     glowWidth: 9.5,
   },
   {
     // $250K → $500K (medium right swing — slightly reduced)
-    path: 'M 120 275 C 158 268, 232 254, 268 244 C 296 237, 286 231, 272 230',
+    path: 'M 108 275 C 148 268, 232 254, 268 244 C 296 237, 286 231, 272 230',
     strokeWidth: 4.5,
     glowWidth: 8,
   },
   {
     // $500K → $1M (medium left swing, starting to narrow)
-    path: 'M 272 230 C 240 222, 200 210, 178 199 C 156 192, 158 186, 167 185',
+    path: 'M 272 230 C 238 222, 176 210, 148 199 C 122 190, 130 186, 145 185',
     strokeWidth: 3.5,
     glowWidth: 6.5,
   },
   {
     // $1M → $5M (noticeably narrower right swing)
-    path: 'M 167 185 C 186 178, 210 164, 222 150 C 232 140, 226 134, 218 132',
+    path: 'M 145 185 C 172 178, 220 166, 244 154 C 262 144, 254 139, 242 138',
     strokeWidth: 2.5,
     glowWidth: 4.5,
   },
   {
     // $5M → $10M summit (thinnest, tightest approach)
-    path: 'M 218 132 C 212 122, 206 112, 202 100 C 199 92, 197 86, 195 82',
+    path: 'M 242 138 C 228 128, 214 114, 206 102 C 201 94, 198 88, 195 82',
     strokeWidth: 1.6,
     glowWidth: 3,
   },
@@ -76,11 +76,11 @@ const TRAIL_PATH = TRAIL_SEGMENTS.map(s => s.path).join(' ');
 
 // Trail milestones ($100K–$5M) — positioned on the compressed trail switchbacks
 const TRAIL_MILESTONES = [
-  { label: '$100K', camp: 'Base Camp', value: 100000,   x: 275, y: 305, labelSide: 'right' },
-  { label: '$250K', camp: 'Camp I',    value: 250000,   x: 120, y: 275, labelSide: 'left' },
+  { label: '$100K', camp: 'Base Camp', value: 100000,   x: 285, y: 325, labelSide: 'right' },
+  { label: '$250K', camp: 'Camp I',    value: 250000,   x: 108, y: 275, labelSide: 'left' },
   { label: '$500K', camp: 'Camp II',   value: 500000,   x: 272, y: 230, labelSide: 'right' },
-  { label: '$1M',   camp: 'Camp III',  value: 1000000,  x: 167, y: 185, labelSide: 'left' },
-  { label: '$5M',   camp: 'Camp IV',   value: 5000000,  x: 218, y: 132, labelSide: 'right' },
+  { label: '$1M',   camp: 'Camp III',  value: 1000000,  x: 145, y: 185, labelSide: 'left' },
+  { label: '$5M',   camp: 'Camp IV',   value: 5000000,  x: 242, y: 138, labelSide: 'right' },
 ];
 
 // $10M summit — massive golden text above temple
@@ -429,7 +429,11 @@ function MountainTrail({ summitData, eq }) {
         const isNext = mData?.isNext;
         const is100k = ms.label === '$100K';
         const delay = 0.4 + i * 0.18;
-        const pillX = ms.labelSide === 'right' ? ms.x + 20 : ms.x - 20;
+        // Per-milestone pill offset — push labels further from edges where needed
+        const baseOffset = 18;
+        // Custom offsets: $100K needs less right push (near right edge), $250K less left
+        const customOffset = ms.label === '$100K' ? 14 : ms.label === '$5M' ? 14 : baseOffset;
+        const pillX = ms.labelSide === 'right' ? ms.x + customOffset : ms.x - customOffset;
         const anchor = ms.labelSide === 'right' ? 'start' : 'end';
         // Force $100K to always be visible (persistent milestone)
         const forceVisible = is100k && achieved;
@@ -482,7 +486,7 @@ function MountainTrail({ summitData, eq }) {
             <g opacity={!achieved && !isNext ? 0.38 : forceVisible ? 0.85 : 1}>
               {/* Pill background — higher contrast */}
               <rect
-                x={ms.labelSide === 'right' ? ms.x + 16 : ms.x - 92}
+                x={ms.labelSide === 'right' ? ms.x + (ms.label === '$100K' || ms.label === '$5M' ? 10 : 14) : ms.x - (ms.label === '$250K' ? 86 : ms.label === '$1M' ? 82 : 90)}
                 y={ms.y - 16}
                 width={76}
                 height={32}
