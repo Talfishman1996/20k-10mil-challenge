@@ -483,41 +483,31 @@ function MountainTrail({ summitData, eq }) {
               >✓</text>
             )}
 
-            {/* ── Compact pill label ── */}
-            <g opacity={!achieved && !isNext ? 0.38 : forceVisible ? 0.85 : 1}>
-              {/* Pill background — higher contrast */}
+            {/* ── Compact pill label — uniform visibility across all states ── */}
+            <g opacity={!achieved && !isNext ? 0.82 : forceVisible ? 0.88 : 1}>
+              {/* Pill background — same tint/transparency for all states */}
               <rect
                 x={ms.labelSide === 'right' ? ms.x + (ms.label === '$100K' || ms.label === '$5M' ? 10 : 14) : ms.x - (ms.label === '$250K' ? 86 : ms.label === '$1M' ? 82 : 90)}
                 y={ms.y - 16 + pillYNudge}
                 width={76}
                 height={32}
                 rx={8}
-                fill={achieved ? 'rgba(27,18,2,0.86)' : isNext ? 'rgba(8,18,22,0.88)' : 'rgba(10,14,22,0.84)'}
-                stroke={achieved ? 'rgba(255,215,0,0.34)' : isNext ? 'rgba(0,200,180,0.45)' : 'rgba(255,255,255,0.12)'}
+                fill={achieved ? 'rgba(27,18,2,0.86)' : isNext ? 'rgba(8,18,22,0.88)' : 'rgba(8,18,22,0.86)'}
+                stroke={achieved ? 'rgba(255,215,0,0.34)' : isNext ? 'rgba(0,200,180,0.45)' : 'rgba(255,255,255,0.22)'}
                 strokeWidth={isNext ? 1.1 : 0.9}
                 strokeDasharray={isNext ? '3 2' : 'none'}
               />
-              {/* Dollar label — center aligned */}
+              {/* Dollar label — centered in pill */}
               <text
-                x={pillCenterX} y={ms.y - 3 + pillYNudge}
-                textAnchor="middle"
-                fill={achieved ? '#FFD700' : isNext ? '#4AE8D4' : 'rgba(255,255,255,0.55)'}
-                opacity={achieved ? 1 : isNext ? 0.95 : 0.8}
-                fontSize={14.5}
+                x={pillCenterX} y={ms.y + 1 + pillYNudge}
+                textAnchor="middle" dominantBaseline="central"
+                fill={achieved ? '#FFD700' : isNext ? '#4AE8D4' : 'rgba(255,255,255,0.65)'}
+                opacity={achieved ? 1 : isNext ? 0.95 : 0.85}
+                fontSize={11.5}
                 fontFamily="'JetBrains Mono', monospace"
                 fontWeight={700}
               >{ms.label}</text>
-              {/* Camp name — center aligned */}
-              <text
-                x={pillCenterX} y={ms.y + 10.5 + pillYNudge}
-                textAnchor="middle"
-                fill={achieved ? '#d4a560' : isNext ? 'rgba(74,232,212,0.55)' : 'rgba(255,255,255,0.3)'}
-                opacity={achieved ? 0.82 : isNext ? 0.65 : 0.45}
-                fontSize={9.5}
-                fontFamily="'JetBrains Mono', monospace"
-                fontWeight={500}
-                letterSpacing="0.15"
-              >{ms.camp}</text>
+              {/* Camp name removed — dollar amount stands alone */}
             </g>
           </motion.g>
         );
