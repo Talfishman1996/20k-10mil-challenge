@@ -1,7 +1,7 @@
 import { SMIN, LOG_MIN, LOG_MAX } from './constants.js';
 
 export const fmt = v => {
-  if (!isFinite(v)) return '—';
+  if (!isFinite(v)) return '\u2014';
   if (v < 1) return '0';
   const a = Math.abs(v);
   if (a >= 1e12) return `${+(v / 1e12).toFixed(1)}T`;
