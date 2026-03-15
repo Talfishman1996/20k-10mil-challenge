@@ -70,13 +70,13 @@ function ConeTip({ active, payload }) {
   const d = payload[0].payload;
   return (
     <div style={{ ...TT, padding: '8px 12px', minWidth: 120 }}>
-      <div style={{ color: '#f1f5f9', fontWeight: 700, fontSize: 14, fontFamily: "'Roboto Mono', ui-monospace, monospace" }}>
+      <div style={{ color: '#f1f5f9', fontWeight: 700, fontSize: 14, fontFamily: "'Inconsolata', ui-monospace, monospace" }}>
         ${fmt(Math.round(d.p50))}
       </div>
       <div style={{ color: '#64748b', fontSize: 10, marginTop: 3 }}>
         Trade #{d.trade} median
       </div>
-      <div style={{ color: '#475569', fontSize: 9, marginTop: 2, fontFamily: "'Roboto Mono', ui-monospace, monospace" }}>
+      <div style={{ color: '#475569', fontSize: 9, marginTop: 2, fontFamily: "'Inconsolata', ui-monospace, monospace" }}>
         P5: ${fmt(Math.round(d.bWide))} {'\u2014'} P95: ${fmt(Math.round(d.bWide + d.hWide))}
       </div>
     </div>
