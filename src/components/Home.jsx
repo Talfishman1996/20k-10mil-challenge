@@ -40,20 +40,20 @@ const TRAIL_SEGMENTS = [
     glowWidth: 10,
   },
   {
-    // $100K → $250K (wider left switchback — more curvature)
-    path: 'M 285 325 C 285 310, 200 295, 118 288 C 50 282, 68 275, 108 275',
+    // $100K → $250K (smooth wider left switchback — GPT 5.4 tangent-matched)
+    path: 'M 285 325 C 252 323, 180 302, 126 290 C 96 283, 80 276, 108 275',
     strokeWidth: 5.5,
     glowWidth: 9.5,
   },
   {
-    // $250K → $500K (wider right switchback — more curvature)
-    path: 'M 108 275 C 108 262, 200 248, 268 244 C 320 240, 300 232, 272 230',
+    // $250K → $500K (smooth wider right switchback — GPT 5.4 tangent-matched)
+    path: 'M 108 275 C 136 274, 220 258, 270 246 C 300 240, 292 231, 272 230',
     strokeWidth: 4.5,
     glowWidth: 8,
   },
   {
-    // $500K → $1M (wider left switchback — more curvature)
-    path: 'M 272 230 C 272 218, 200 205, 148 199 C 95 193, 115 186, 145 185',
+    // $500K → $1M (smooth wider left switchback — GPT 5.4 tangent-matched)
+    path: 'M 272 230 C 252 229, 192 214, 150 200 C 128 194, 118 192, 145 185',
     strokeWidth: 3.5,
     glowWidth: 6.5,
   },
