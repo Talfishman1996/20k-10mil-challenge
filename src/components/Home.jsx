@@ -34,32 +34,32 @@ const CAMP_NAMES = ['Base Camp', 'Camp I', 'Camp II', 'Camp III', 'High Camp', '
 
 const TRAIL_SEGMENTS = [
   {
-    // Start → $100K (bottom, widest, thickest — reduced curvature for cleaner ascent feel)
-    path: 'M 195 385 C 228 378, 278 362, 300 348 C 318 336, 302 326, 285 325',
+    // Start → $100K (wide flowing arc — GPT 5.4 v2 round switchbacks)
+    path: 'M 195 385 C 240 392, 325 372, 300 348 C 275 324, 338 326, 285 325',
     strokeWidth: 5.5,
     glowWidth: 10,
   },
   {
-    // $100K → $250K (smooth wider left switchback — GPT 5.4 tangent-matched)
-    path: 'M 285 325 C 252 323, 180 302, 126 290 C 96 283, 80 276, 108 275',
+    // $100K → $250K (wide left switchback — GPT 5.4 v2 round arcs)
+    path: 'M 285 325 C 232 324, 60 320, 126 290 C 192 260, 48 274, 108 275',
     strokeWidth: 5.5,
     glowWidth: 9.5,
   },
   {
-    // $250K → $500K (smooth wider right switchback — GPT 5.4 tangent-matched)
-    path: 'M 108 275 C 136 274, 220 258, 270 246 C 300 240, 292 231, 272 230',
+    // $250K → $500K (wide right switchback — GPT 5.4 v2 round arcs)
+    path: 'M 108 275 C 168 276, 330 270, 270 246 C 210 222, 332 229, 272 230',
     strokeWidth: 4.5,
     glowWidth: 8,
   },
   {
-    // $500K → $1M (smooth wider left switchback — GPT 5.4 tangent-matched)
-    path: 'M 272 230 C 252 229, 192 214, 150 200 C 128 194, 118 192, 145 185',
+    // $500K → $1M (wide left switchback — GPT 5.4 v2 round arcs)
+    path: 'M 272 230 C 212 231, 70 226, 150 200 C 230 174, 85 188, 145 185',
     strokeWidth: 3.5,
     glowWidth: 6.5,
   },
   {
-    // $1M → $5M (noticeably narrower right swing)
-    path: 'M 145 185 C 172 178, 220 166, 244 154 C 262 144, 254 139, 242 138',
+    // $1M → $5M (narrower right swing — GPT 5.4 v2 round arcs)
+    path: 'M 145 185 C 205 182, 310 172, 244 154 C 178 136, 290 138, 242 138',
     strokeWidth: 2.5,
     glowWidth: 4.5,
   },
@@ -256,9 +256,10 @@ function MountainTrail({ summitData, eq }) {
 
         {/* Top-edge gleam for metallic bevel */}
         <linearGradient id="moneyGoldEdge" x1="195" y1="28" x2="195" y2="92" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#FFF6D2" stopOpacity="0.95" />
-          <stop offset="0.18" stopColor="#FFF0B6" stopOpacity="0.82" />
-          <stop offset="0.42" stopColor="#F1CA72" stopOpacity="0.20" />
+          <stop offset="0" stopColor="#FFF6D2" stopOpacity="1" />
+          <stop offset="0.22" stopColor="#FFF0B6" stopOpacity="0.90" />
+          <stop offset="0.50" stopColor="#F1CA72" stopOpacity="0.35" />
+          <stop offset="0.75" stopColor="#D4A040" stopOpacity="0.10" />
           <stop offset="1" stopColor="#A46817" stopOpacity="0" />
         </linearGradient>
 
@@ -291,7 +292,7 @@ function MountainTrail({ summitData, eq }) {
         </filter>
 
         {/* $10M depth shadows — tighter for crisper text */}
-        <filter id="moneyDepth" x="118" y="18" width="154" height="94" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+        <filter id="moneyDepth" x="90" y="10" width="210" height="110" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
           <feDropShadow dx="0" dy="1" stdDeviation="0.5" floodColor="#FFF6CF" floodOpacity="0.95" />
           <feDropShadow dx="0" dy="2" stdDeviation="1.8" floodColor="#6C3F0B" floodOpacity="0.65" />
           <feDropShadow dx="0" dy="5" stdDeviation="6" floodColor="#B7731A" floodOpacity="0.25" />
@@ -539,7 +540,7 @@ function MountainTrail({ summitData, eq }) {
             fontFamily="'Cinzel', 'Inter Tight', Georgia, serif"
             fontSize="48" fontWeight="900" letterSpacing="1.8"
             fill="url(#moneyGold)"
-            stroke="rgba(255,230,160,0.50)" strokeWidth="1.2"
+            stroke="rgba(255,230,160,0.85)" strokeWidth="1.2"
             style={{ textRendering: 'geometricPrecision', paintOrder: 'stroke fill' }}
           >$10M</text>
 
