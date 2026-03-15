@@ -10,20 +10,20 @@ function EqTooltip({ active, payload }) {
   const d = payload[0].payload;
   return (
     <div style={{ ...TT, minWidth: 130, padding: '10px 14px' }}>
-      <div style={{ color: '#f1f5f9', fontWeight: 700, fontFamily: "'Roboto Mono', ui-monospace, monospace", fontSize: 15 }}>
+      <div style={{ color: '#f1f5f9', fontWeight: 700, fontFamily: "'Inconsolata', ui-monospace, monospace", fontSize: 15 }}>
         ${fmt(d.equity)}
       </div>
       {d.pnl !== undefined && (
         <div style={{
           color: d.pnl >= 0 ? '#10b981' : '#f43f5e',
-          fontFamily: "'Roboto Mono', ui-monospace, monospace",
+          fontFamily: "'Inconsolata', ui-monospace, monospace",
           fontSize: 12, fontWeight: 600, marginTop: 2
         }}>
           {d.pnl >= 0 ? '+$' : '-$'}{fmt(Math.abs(d.pnl))}
         </div>
       )}
       {d.dd > 0 && (
-        <div style={{ color: '#ef4444', fontSize: 11, marginTop: 2, fontFamily: "'Roboto Mono', ui-monospace, monospace" }}>
+        <div style={{ color: '#ef4444', fontSize: 11, marginTop: 2, fontFamily: "'Inconsolata', ui-monospace, monospace" }}>
           DD: {'\u2212'}{d.dd.toFixed(1)}%
         </div>
       )}
