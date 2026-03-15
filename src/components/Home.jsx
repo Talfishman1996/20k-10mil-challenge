@@ -794,8 +794,8 @@ export default function Home({ trades, settings, onOpenTradeEntry }) {
               Portfolio Value
             </div>
             <div
-              className="font-bold font-mono tabular-nums tracking-normal text-white leading-none"
-              style={{ fontSize: '56px', textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}
+              className="font-bold font-mono tabular-nums text-white leading-none"
+              style={{ fontSize: '56px', letterSpacing: '-0.04em', textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}
             >
               ${fmt(eq)}
             </div>
