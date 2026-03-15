@@ -782,8 +782,8 @@ export default function Home({ trades, settings, onOpenTradeEntry }) {
             style={{
               position: 'relative',
               zIndex: 25,
-              background: 'radial-gradient(ellipse at 50% 55%, rgba(10,14,20,0.82) 0%, rgba(10,14,20,0.5) 45%, transparent 70%)',
-              padding: '12px 0 4px',
+              background: 'radial-gradient(ellipse at 50% 50%, rgba(10,14,20,0.95) 0%, rgba(10,14,20,0.88) 30%, rgba(10,14,20,0.65) 55%, rgba(10,14,20,0.25) 75%, transparent 100%)',
+              padding: '16px 0 4px',
             }}
           >
             <div
