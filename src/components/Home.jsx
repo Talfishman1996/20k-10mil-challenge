@@ -239,19 +239,19 @@ function MountainTrail({ summitData, eq }) {
           <stop offset="100%" stopColor="#FFB830" />
         </linearGradient>
 
-        {/* Polished gold body — warm dense metallic per GPT 5.4 */}
+        {/* Polished gold body — boosted brightness for iPhone visibility */}
         <linearGradient id="moneyGold" x1="145" y1="34" x2="245" y2="95" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#8B5A1B" />
-          <stop offset="0.08" stopColor="#C4842A" />
-          <stop offset="0.18" stopColor="#E8B844" />
+          <stop offset="0" stopColor="#B8782A" />
+          <stop offset="0.08" stopColor="#D9A03A" />
+          <stop offset="0.18" stopColor="#F0C850" />
           <stop offset="0.30" stopColor="#FFE8A0" />
           <stop offset="0.38" stopColor="#FFFAD8" />
-          <stop offset="0.46" stopColor="#F0C45E" />
-          <stop offset="0.58" stopColor="#D49530" />
-          <stop offset="0.70" stopColor="#A86A1C" />
-          <stop offset="0.82" stopColor="#F2D06E" />
+          <stop offset="0.46" stopColor="#F5D06A" />
+          <stop offset="0.58" stopColor="#E0A840" />
+          <stop offset="0.70" stopColor="#C4882A" />
+          <stop offset="0.82" stopColor="#F5D878" />
           <stop offset="0.92" stopColor="#FFF6C8" />
-          <stop offset="1" stopColor="#B87A24" />
+          <stop offset="1" stopColor="#D49530" />
         </linearGradient>
 
         {/* Top-edge gleam for metallic bevel */}
@@ -290,11 +290,11 @@ function MountainTrail({ summitData, eq }) {
           <feBlend in2="SourceGraphic" mode="screen" />
         </filter>
 
-        {/* $10M depth shadows */}
+        {/* $10M depth shadows — tighter for crisper text */}
         <filter id="moneyDepth" x="118" y="18" width="154" height="94" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-          <feDropShadow dx="0" dy="1" stdDeviation="0.7" floodColor="#FFF6CF" floodOpacity="0.85" />
-          <feDropShadow dx="0" dy="3" stdDeviation="2.8" floodColor="#6C3F0B" floodOpacity="0.55" />
-          <feDropShadow dx="0" dy="7" stdDeviation="8" floodColor="#B7731A" floodOpacity="0.18" />
+          <feDropShadow dx="0" dy="1" stdDeviation="0.5" floodColor="#FFF6CF" floodOpacity="0.95" />
+          <feDropShadow dx="0" dy="2" stdDeviation="1.8" floodColor="#6C3F0B" floodOpacity="0.65" />
+          <feDropShadow dx="0" dy="5" stdDeviation="6" floodColor="#B7731A" floodOpacity="0.25" />
         </filter>
 
         {/* Clip path for shimmer constrained to text */}
@@ -539,18 +539,18 @@ function MountainTrail({ summitData, eq }) {
             fontFamily="'Cinzel', 'Inter Tight', Georgia, serif"
             fontSize="48" fontWeight="900" letterSpacing="1.8"
             fill="url(#moneyGold)"
-            stroke="rgba(255,245,210,0.24)" strokeWidth="0.8"
+            stroke="rgba(255,230,160,0.50)" strokeWidth="1.2"
             style={{ textRendering: 'geometricPrecision', paintOrder: 'stroke fill' }}
           >$10M</text>
 
-          {/* Top-edge metallic bevel */}
+          {/* Top-edge metallic bevel — full opacity */}
           <text
             x="195" y="78"
             textAnchor="middle"
             fontFamily="'Cinzel', 'Inter Tight', Georgia, serif"
-            fontSize="48" fontWeight="900" letterSpacing="2.2"
+            fontSize="48" fontWeight="900" letterSpacing="1.8"
             fill="url(#moneyGoldEdge)"
-            opacity="0.94"
+            opacity="1"
             style={{ textRendering: 'geometricPrecision' }}
           >$10M</text>
         </g>
