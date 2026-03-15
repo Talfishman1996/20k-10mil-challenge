@@ -40,20 +40,20 @@ const TRAIL_SEGMENTS = [
     glowWidth: 10,
   },
   {
-    // $100K → $250K (tighter left swing — less racetrack, more ascent)
-    path: 'M 285 325 C 248 316, 168 300, 118 288 C 82 280, 88 276, 108 275',
+    // $100K → $250K (wider left switchback — more curvature)
+    path: 'M 285 325 C 285 310, 200 295, 118 288 C 50 282, 68 275, 108 275',
     strokeWidth: 5.5,
     glowWidth: 9.5,
   },
   {
-    // $250K → $500K (medium right swing — slightly reduced)
-    path: 'M 108 275 C 148 268, 232 254, 268 244 C 296 237, 286 231, 272 230',
+    // $250K → $500K (wider right switchback — more curvature)
+    path: 'M 108 275 C 108 262, 200 248, 268 244 C 320 240, 300 232, 272 230',
     strokeWidth: 4.5,
     glowWidth: 8,
   },
   {
-    // $500K → $1M (medium left swing, starting to narrow)
-    path: 'M 272 230 C 238 222, 176 210, 148 199 C 122 190, 130 186, 145 185',
+    // $500K → $1M (wider left switchback — more curvature)
+    path: 'M 272 230 C 272 218, 200 205, 148 199 C 95 193, 115 186, 145 185',
     strokeWidth: 3.5,
     glowWidth: 6.5,
   },
