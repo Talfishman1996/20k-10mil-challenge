@@ -34,32 +34,32 @@ const CAMP_NAMES = ['Base Camp', 'Camp I', 'Camp II', 'Camp III', 'High Camp', '
 
 const TRAIL_SEGMENTS = [
   {
-    // Start → $100K (wide flowing arc — GPT 5.4 v2 round switchbacks)
-    path: 'M 195 385 C 240 392, 325 372, 300 348 C 275 324, 338 326, 285 325',
+    // Start → $100K (balanced curve — GPT 5.4 v3 moderated)
+    path: 'M 195 385 C 217 371, 300 344, 285 325',
     strokeWidth: 5.5,
     glowWidth: 10,
   },
   {
-    // $100K → $250K (wide left switchback — GPT 5.4 v2 round arcs)
-    path: 'M 285 325 C 232 324, 60 320, 126 290 C 192 260, 48 274, 108 275',
+    // $100K → $250K (controlled left bend — GPT 5.4 v3 moderated)
+    path: 'M 285 325 C 270 306, 111 297, 108 275',
     strokeWidth: 5.5,
     glowWidth: 9.5,
   },
   {
-    // $250K → $500K (wide right switchback — GPT 5.4 v2 round arcs)
-    path: 'M 108 275 C 168 276, 330 270, 270 246 C 210 222, 332 229, 272 230',
+    // $250K → $500K (controlled right bend — GPT 5.4 v3 moderated)
+    path: 'M 108 275 C 105 253, 264 250, 272 230',
     strokeWidth: 4.5,
     glowWidth: 8,
   },
   {
-    // $500K → $1M (wide left switchback — GPT 5.4 v2 round arcs)
-    path: 'M 272 230 C 212 231, 70 226, 150 200 C 230 174, 85 188, 145 185',
+    // $500K → $1M (controlled left bend — GPT 5.4 v3 moderated)
+    path: 'M 272 230 C 280 210, 151 204, 145 185',
     strokeWidth: 3.5,
     glowWidth: 6.5,
   },
   {
-    // $1M → $5M (narrower right swing — GPT 5.4 v2 round arcs)
-    path: 'M 145 185 C 205 182, 310 172, 244 154 C 178 136, 290 138, 242 138',
+    // $1M → $5M (taut summit approach — GPT 5.4 v3 moderated)
+    path: 'M 145 185 C 139 166, 226 146, 242 138',
     strokeWidth: 2.5,
     glowWidth: 4.5,
   },
