@@ -63,6 +63,12 @@ const TRAIL_SEGMENTS = [
     strokeWidth: 2.5,
     glowWidth: 4.5,
   },
+  {
+    // $5M → Temple base (delicate final approach — GPT 5.4)
+    path: 'M 242 138 C 236 132, 227 125, 220 118 C 212 111, 204 105, 196 99',
+    strokeWidth: 1.6,
+    glowWidth: 3,
+  },
 
 ];
 
@@ -388,7 +394,7 @@ function MountainTrail({ summitData, eq }) {
               filter="url(#trailGlowAmber)"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: segProgress }}
-              transition={{ duration: 1.5 + i * 0.2, ease: 'easeInOut' }}
+              transition={{ duration: 1.35, delay: 0.15 + i * 0.22, ease: [0.22, 1, 0.36, 1] }}
             />
             {/* Main amber line */}
             <motion.path
@@ -400,7 +406,7 @@ function MountainTrail({ summitData, eq }) {
               strokeLinejoin="round"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: segProgress }}
-              transition={{ duration: 1.5 + i * 0.2, ease: 'easeInOut' }}
+              transition={{ duration: 1.35, delay: 0.15 + i * 0.22, ease: [0.22, 1, 0.36, 1] }}
             />
             {/* Bright inner core */}
             <motion.path
@@ -413,7 +419,7 @@ function MountainTrail({ summitData, eq }) {
               strokeLinejoin="round"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: segProgress }}
-              transition={{ duration: 1.5 + i * 0.2, ease: 'easeInOut' }}
+              transition={{ duration: 1.35, delay: 0.15 + i * 0.22, ease: [0.22, 1, 0.36, 1] }}
             />
           </g>
         );
@@ -426,17 +432,20 @@ function MountainTrail({ summitData, eq }) {
         const isNext = mData?.isNext;
         const is100k = ms.label === '$100K';
         const delay = 0.4 + i * 0.18;
-        // Per-milestone pill offset — push labels further from edges where needed
-        const baseOffset = 18;
-        const customOffset = ms.label === '$100K' ? 14 : ms.label === '$5M' ? 14 : baseOffset;
-        // Center-aligned text: position at center of pill rect
-        const pillRectX = ms.labelSide === 'right'
-          ? ms.x + (ms.label === '$100K' || ms.label === '$5M' ? 10 : 14)
-          : ms.x - (ms.label === '$250K' ? 86 : ms.label === '$1M' ? 82 : 90);
+        // Per-milestone custom pill offsets (GPT 5.4 spatial analysis)
+        // Each offset places pill top-left at (dot.x + ox, dot.y + oy)
+        const PILL_OFFSETS = {
+          '$100K': { ox: 0, oy: -32 },    // bottom-left corner on dot
+          '$250K': { ox: -84, oy: -10 },   // left-low
+          '$500K': { ox: 24, oy: -8 },     // right, slightly higher
+          '$1M':   { ox: -92, oy: -16 },   // farther left
+          '$5M':   { ox: 18, oy: 10 },     // below-right of dot
+        };
+        const offset = PILL_OFFSETS[ms.label] || { ox: 14, oy: -16 };
+        const pillRectX = ms.x + offset.ox;
+        const pillRectY = ms.y + offset.oy;
         const pillCenterX = pillRectX + 38; // 76/2 = 38 (half pill width)
-        const anchor = 'middle';
-        // Vertical nudge: push $100K pill up a few px to separate from PORTFOLIO VALUE
-        const pillYNudge = is100k ? -6 : 0;
+        const pillCenterY = pillRectY + 16; // 32/2 = 16 (half pill height)
         // Force $100K to always be visible (persistent milestone)
         const forceVisible = is100k && achieved;
 
@@ -488,8 +497,8 @@ function MountainTrail({ summitData, eq }) {
             <g opacity={!achieved && !isNext ? 0.82 : forceVisible ? 0.88 : 1}>
               {/* Pill background — same tint/transparency for all states */}
               <rect
-                x={ms.labelSide === 'right' ? ms.x + (ms.label === '$100K' || ms.label === '$5M' ? 10 : 14) : ms.x - (ms.label === '$250K' ? 86 : ms.label === '$1M' ? 82 : 90)}
-                y={ms.y - 16 + pillYNudge}
+                x={pillRectX}
+                y={pillRectY}
                 width={76}
                 height={32}
                 rx={8}
@@ -500,12 +509,12 @@ function MountainTrail({ summitData, eq }) {
               />
               {/* Dollar label — centered in pill */}
               <text
-                x={pillCenterX} y={ms.y + 1 + pillYNudge}
+                x={pillCenterX} y={pillCenterY}
                 textAnchor="middle" dominantBaseline="central"
                 fill={achieved ? '#FFD700' : isNext ? '#4AE8D4' : 'rgba(255,255,255,0.65)'}
                 opacity={achieved ? 1 : isNext ? 0.95 : 0.85}
                 fontSize={11.5}
-                fontFamily="'JetBrains Mono', monospace"
+                fontFamily="'IBM Plex Mono', monospace"
                 fontWeight={700}
               >{ms.label}</text>
               {/* Camp name removed — dollar amount stands alone */}
