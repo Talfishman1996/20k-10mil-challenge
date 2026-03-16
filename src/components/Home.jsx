@@ -64,8 +64,8 @@ const TRAIL_SEGMENTS = [
     glowWidth: 4.5,
   },
   {
-    // $5M → Temple base (smooth single arc, stays right of building)
-    path: 'M 242 138 C 240 126, 230 112, 216 102',
+    // $5M → Temple base (smooth sweep to center entrance)
+    path: 'M 242 138 C 244 128, 225 114, 200 106',
     strokeWidth: 1.6,
     glowWidth: 3,
   },
@@ -435,10 +435,10 @@ function MountainTrail({ summitData, eq }) {
         // Per-milestone custom pill offsets (GPT 5.4 spatial analysis)
         // Each offset places pill top-left at (dot.x + ox, dot.y + oy)
         const PILL_OFFSETS = {
-          '$100K': { ox: 0, oy: -32 },    // bottom-left corner on dot
-          '$250K': { ox: -84, oy: -10 },   // left-low
+          '$100K': { ox: -90, oy: -14 },   // left of dot, clear of portfolio text
+          '$250K': { ox: -70, oy: -14 },   // left, pulled inward
           '$500K': { ox: 24, oy: -8 },     // right, slightly higher
-          '$1M':   { ox: -92, oy: -16 },   // farther left
+          '$1M':   { ox: -78, oy: -16 },   // left, pulled inward
           '$5M':   { ox: 18, oy: 10 },     // below-right of dot
         };
         const offset = PILL_OFFSETS[ms.label] || { ox: 14, oy: -16 };
@@ -505,7 +505,7 @@ function MountainTrail({ summitData, eq }) {
                 fill={achieved ? 'rgba(27,18,2,0.86)' : isNext ? 'rgba(8,18,22,0.88)' : 'rgba(8,18,22,0.86)'}
                 stroke={achieved ? 'rgba(255,215,0,0.34)' : isNext ? 'rgba(0,200,180,0.45)' : 'rgba(255,255,255,0.22)'}
                 strokeWidth={isNext ? 1.1 : 0.9}
-                strokeDasharray={isNext ? '3 2' : 'none'}
+                strokeDasharray="none"
               />
               {/* Dollar label — centered in pill */}
               <text
