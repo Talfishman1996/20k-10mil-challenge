@@ -514,7 +514,7 @@ function MountainTrail({ summitData, eq }) {
                 fill={achieved ? '#FFD700' : isNext ? '#4AE8D4' : 'rgba(255,255,255,0.65)'}
                 opacity={achieved ? 1 : isNext ? 0.95 : 0.85}
                 fontSize={11.5}
-                fontFamily="'IBM Plex Mono', monospace"
+                fontFamily="'Source Code Pro', monospace"
                 fontWeight={700}
               >{ms.label}</text>
               {/* Camp name removed — dollar amount stands alone */}
