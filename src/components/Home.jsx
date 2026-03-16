@@ -435,11 +435,11 @@ function MountainTrail({ summitData, eq }) {
         // Per-milestone custom pill offsets (GPT 5.4 spatial analysis)
         // Each offset places pill top-left at (dot.x + ox, dot.y + oy)
         const PILL_OFFSETS = {
-          '$100K': { ox: -90, oy: -14 },   // left of dot, clear of portfolio text
-          '$250K': { ox: -70, oy: -14 },   // left, pulled inward
-          '$500K': { ox: 24, oy: -8 },     // right, slightly higher
-          '$1M':   { ox: -78, oy: -16 },   // left, pulled inward
-          '$5M':   { ox: 18, oy: 10 },     // below-right of dot
+          '$100K': { ox: 18, oy: -8 },     // right of dot, visible above hero text
+          '$250K': { ox: -82, oy: -4 },    // left of dot, near edge
+          '$500K': { ox: 22, oy: -22 },    // right of dot, pulled up
+          '$1M':   { ox: -80, oy: -10 },   // left of dot
+          '$5M':   { ox: 26, oy: -12 },    // right of dot, slightly up
         };
         const offset = PILL_OFFSETS[ms.label] || { ox: 14, oy: -16 };
         const pillRectX = ms.x + offset.ox;
@@ -514,7 +514,7 @@ function MountainTrail({ summitData, eq }) {
                 fill={achieved ? '#FFD700' : isNext ? '#4AE8D4' : 'rgba(255,255,255,0.65)'}
                 opacity={achieved ? 1 : isNext ? 0.95 : 0.85}
                 fontSize={11.5}
-                fontFamily="'JetBrains Mono', monospace"
+                fontFamily="'IBM Plex Mono', monospace"
                 fontWeight={700}
               >{ms.label}</text>
               {/* Camp name removed — dollar amount stands alone */}
