@@ -64,8 +64,8 @@ const TRAIL_SEGMENTS = [
     glowWidth: 4.5,
   },
   {
-    // $5M → Temple base (smooth sweep to center entrance)
-    path: 'M 242 138 C 244 128, 225 114, 200 106',
+    // $5M → Temple base (short approach, ends before building)
+    path: 'M 242 138 C 246 132, 242 126, 234 122',
     strokeWidth: 1.6,
     glowWidth: 3,
   },
@@ -514,7 +514,7 @@ function MountainTrail({ summitData, eq }) {
                 fill={achieved ? '#FFD700' : isNext ? '#4AE8D4' : 'rgba(255,255,255,0.65)'}
                 opacity={achieved ? 1 : isNext ? 0.95 : 0.85}
                 fontSize={11.5}
-                fontFamily="'Inconsolata', monospace"
+                fontFamily="'JetBrains Mono', monospace"
                 fontWeight={700}
               >{ms.label}</text>
               {/* Camp name removed — dollar amount stands alone */}
