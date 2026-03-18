@@ -441,10 +441,41 @@ function MountainTrail({ summitData, eq }) {
         );
       })}
 
-      {/* ─── POST-DRAW SHIMMER — light sweep, only on fully completed segments ─── */}
-      {playerSegIdx > 0 && (
+      {/* ─── SHIMMER MASK — reveals shimmer only where amber trail is drawn ─── */}
+      <mask id="trailDrawnMask">
+        {TRAIL_SEGMENTS.map((seg, i) => {
+          let segProgress = 0;
+          if (i < playerSegIdx) segProgress = 1;
+          else if (i === playerSegIdx) segProgress = playerSegFrac;
+          if (segProgress <= 0) return null;
+          const totalLen = TRAIL_SEGMENTS.reduce((s, g) => s + g.len, 0);
+          const totalTime = 2.0;
+          const segDuration = Math.max(0.08, (seg.len / totalLen) * totalTime);
+          const segDelay = 0.15 + TRAIL_SEGMENTS.slice(0, i).reduce((s, g) => s + Math.max(0.08, (g.len / totalLen) * totalTime), 0);
+          return (
+            <motion.path
+              key={`mask-${i}`}
+              d={seg.path}
+              fill="none"
+              stroke="white"
+              strokeWidth={seg.glowWidth + 2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: segProgress }}
+              transition={{ duration: segDuration, delay: segDelay, ease: 'linear' }}
+            />
+          );
+        })}
+      </mask>
+
+      {/* ─── POST-DRAW SHIMMER — masked to amber trail extent ─── */}
+      <g mask="url(#trailDrawnMask)">
         <path
-          d={TRAIL_SEGMENTS.slice(0, playerSegIdx).map(s => s.path).join(' ')}
+          d={TRAIL_SEGMENTS.map((s, i) =>
+            i === 0 ? s.path : s.path.replace(/^M\s*[\d.]+\s+[\d.]+\s*/, '')
+          ).join(' ')}
+          pathLength={1000}
           fill="none"
           stroke="#FFFDE7"
           strokeWidth={2}
@@ -452,7 +483,7 @@ function MountainTrail({ summitData, eq }) {
           className="trail-shimmer"
           style={{ pointerEvents: 'none' }}
         />
-      )}
+      </g>
 
       {/* ─── MILESTONES ($100K–$5M) ─── */}
       {TRAIL_MILESTONES.map((ms, i) => {
@@ -747,14 +778,14 @@ export default function Home({ trades, settings, onOpenTradeEntry }) {
           50% { transform: scaleY(1.12); opacity: 1; }
         }
         @keyframes trailShimmer {
-          0% { stroke-dashoffset: 800; opacity: 0; }
-          10% { opacity: 0.6; }
-          90% { opacity: 0.6; }
+          0% { stroke-dashoffset: 1000; opacity: 0; }
+          8% { opacity: 0.6; }
+          92% { opacity: 0.6; }
           100% { stroke-dashoffset: 0; opacity: 0; }
         }
         .trail-shimmer {
-          animation: trailShimmer 3s ease-in-out 2.5s infinite;
-          stroke-dasharray: 30 770;
+          animation: trailShimmer 2.55s linear 2.5s infinite;
+          stroke-dasharray: 40 960;
         }
 
         /* ── Divine Storm: God Rays — phased crossfade ── */
@@ -907,7 +938,7 @@ export default function Home({ trades, settings, onOpenTradeEntry }) {
         </div>
 
         {/* ── Portfolio Value — overlaid at gradient transition zone, above trail ── */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 text-center pb-3 px-4">
+        <div className="absolute bottom-0 left-0 right-0 z-20 text-center px-4" style={{ paddingBottom: '5px' }}>
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
