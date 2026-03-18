@@ -331,7 +331,19 @@ function MountainTrail({ summitData, eq }) {
           <stop offset="40%" stopColor="#FFB830" stopOpacity="0.06" />
           <stop offset="100%" stopColor="#FFB830" stopOpacity="0" />
         </radialGradient>
+        {/* Trail start feather — fades bottom of path from transparent to visible */}
+        <linearGradient id="trailFeather" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
+          <stop offset="0%" stopColor="black" />
+          <stop offset="8%" stopColor="white" />
+          <stop offset="100%" stopColor="white" />
+        </linearGradient>
+        <mask id="trailFeatherMask" maskContentUnits="objectBoundingBox">
+          <rect x="0" y="0" width="1" height="1" fill="url(#trailFeather)" />
+        </mask>
       </defs>
+
+      {/* ─── All trails wrapped in feather mask ─── */}
+      <g mask="url(#trailFeatherMask)">
 
       {/* ─── FUTURE TRAIL — segmented with perspective taper ─── */}
       {TRAIL_SEGMENTS.map((seg, i) => (
@@ -485,6 +497,8 @@ function MountainTrail({ summitData, eq }) {
         />
       </g>
 
+      </g>{/* end feather mask */}
+
       {/* ─── MILESTONES ($100K–$5M) ─── */}
       {TRAIL_MILESTONES.map((ms, i) => {
         const mData = summitData.miles[i];
@@ -569,7 +583,7 @@ function MountainTrail({ summitData, eq }) {
                 textAnchor="middle" dominantBaseline="central"
                 fill={achieved ? '#FFD700' : isNext ? '#4AE8D4' : 'rgba(255,255,255,0.65)'}
                 opacity={achieved ? 1 : isNext ? 0.95 : 0.85}
-                fontSize={11.5}
+                fontSize={13.5}
                 fontFamily="'Source Code Pro', monospace"
                 fontWeight={700}
               >{ms.label}</text>
@@ -938,7 +952,7 @@ export default function Home({ trades, settings, onOpenTradeEntry }) {
         </div>
 
         {/* ── Portfolio Value — overlaid at gradient transition zone, above trail ── */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 text-center px-4" style={{ paddingBottom: '5px' }}>
+        <div className="absolute bottom-0 left-0 right-0 z-20 text-center px-4" style={{ paddingBottom: '2px' }}>
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -951,8 +965,8 @@ export default function Home({ trades, settings, onOpenTradeEntry }) {
             }}
           >
             <div
-              className="text-xs text-slate-400 uppercase tracking-[0.17em] font-semibold font-mono mb-2"
-              style={{ textShadow: '0 1px 6px rgba(0,0,0,0.9), 0 0 20px rgba(10,14,20,0.8)', color: 'rgba(255,255,255,0.6)' }}
+              className="text-xs text-slate-400 uppercase tracking-[0.17em] font-semibold font-mono"
+              style={{ marginBottom: '6px', textShadow: '0 1px 6px rgba(0,0,0,0.9), 0 0 20px rgba(10,14,20,0.8)', color: 'rgba(255,255,255,0.6)' }}
             >
               Portfolio Value
             </div>
