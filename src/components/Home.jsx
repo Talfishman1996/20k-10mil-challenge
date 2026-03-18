@@ -35,14 +35,14 @@ const CAMP_NAMES = ['Base Camp', 'Camp I', 'Camp II', 'Camp III', 'High Camp', '
 const TRAIL_SEGMENTS = [
   {
     // Start → $100K (balanced curve — GPT 5.4 v3 moderated)
-    path: 'M 195 385 C 217 371, 300 344, 285 325',
+    path: 'M 195 385 C 217 371, 300 341, 285 322',
     strokeWidth: 5.5,
     glowWidth: 10,
     len: 124,
   },
   {
     // $100K → $250K (controlled left bend — GPT 5.4 v3 moderated)
-    path: 'M 285 325 C 270 306, 111 297, 108 275',
+    path: 'M 285 322 C 270 303, 111 297, 108 275',
     strokeWidth: 5.5,
     glowWidth: 9.5,
     len: 196,
@@ -56,14 +56,14 @@ const TRAIL_SEGMENTS = [
   },
   {
     // $500K → $1M (controlled left bend — GPT 5.4 v3 moderated)
-    path: 'M 272 230 C 280 210, 151 196, 145 177',
+    path: 'M 272 230 C 280 210, 151 197, 145 178',
     strokeWidth: 3.5,
     glowWidth: 6.5,
     len: 154,
   },
   {
     // $1M → $5M (curved summit approach)
-    path: 'M 145 177 C 134 154, 215 166, 245 152',
+    path: 'M 145 178 C 134 155, 215 166, 245 152',
     strokeWidth: 2.5,
     glowWidth: 4.5,
     len: 118,
@@ -83,10 +83,10 @@ const TRAIL_PATH = TRAIL_SEGMENTS.map(s => s.path).join(' ');
 
 // Trail milestones ($100K–$5M) — positioned on the compressed trail switchbacks
 const TRAIL_MILESTONES = [
-  { label: '$100K', camp: 'Base Camp', value: 100000,   x: 285, y: 325, labelSide: 'right' },
+  { label: '$100K', camp: 'Base Camp', value: 100000,   x: 285, y: 322, labelSide: 'right' },
   { label: '$250K', camp: 'Camp I',    value: 250000,   x: 108, y: 275, labelSide: 'left' },
   { label: '$500K', camp: 'Camp II',   value: 500000,   x: 272, y: 230, labelSide: 'right' },
-  { label: '$1M',   camp: 'Camp III',  value: 1000000,  x: 145, y: 177, labelSide: 'left' },
+  { label: '$1M',   camp: 'Camp III',  value: 1000000,  x: 145, y: 178, labelSide: 'left' },
   { label: '$5M',   camp: 'Camp IV',   value: 5000000,  x: 245, y: 152, labelSide: 'right' },
 ];
 
@@ -516,7 +516,7 @@ function MountainTrail({ summitData, eq }) {
           '$100K': { ox: 2, oy: -47 },      // right of dot, right 1 down 1
           '$250K': { ox: -89, oy: -27 },   // left of dot, up 3 right 2
           '$500K': { ox: 12, oy: -32 },    // right of dot, pushed down 6
-          '$1M':   { ox: -94, oy: -26 },   // left of dot, right 1
+          '$1M':   { ox: -94, oy: -27 },   // left of dot, compensate for dot+trail down 4
           '$5M':   { ox: 16, oy: -15 },    // right of dot, pushed up 4
         };
         const offset = PILL_OFFSETS[ms.label] || { ox: 14, oy: -16 };
