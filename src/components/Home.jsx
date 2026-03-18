@@ -334,7 +334,7 @@ function MountainTrail({ summitData, eq }) {
         {/* Trail start feather — fades bottom of path from transparent to visible */}
         <linearGradient id="trailFeather" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
           <stop offset="0%" stopColor="black" />
-          <stop offset="8%" stopColor="white" />
+          <stop offset="5%" stopColor="white" />
           <stop offset="100%" stopColor="white" />
         </linearGradient>
         <mask id="trailFeatherMask" maskContentUnits="objectBoundingBox">
@@ -513,10 +513,10 @@ function MountainTrail({ summitData, eq }) {
         // Each offset places pill top-left at (dot.x + ox, dot.y + oy)
         const PILL_OFFSETS = {
           '$100K': { ox: 1, oy: -48 },      // right of dot, adjusted position
-          '$250K': { ox: -93, oy: -24 },   // left of dot, adjusted
-          '$500K': { ox: 19, oy: -30 },    // right of dot, adjusted
+          '$250K': { ox: -91, oy: -24 },   // left of dot, adjusted
+          '$500K': { ox: 12, oy: -38 },    // right of dot, adjusted
           '$1M':   { ox: -95, oy: -30 },   // left of dot, pushed up 20 + left 15
-          '$5M':   { ox: 21, oy: -12 },    // right of dot, pushed left 5
+          '$5M':   { ox: 16, oy: -11 },    // right of dot, adjusted
         };
         const offset = PILL_OFFSETS[ms.label] || { ox: 14, oy: -16 };
         const pillRectX = ms.x + offset.ox;
@@ -525,14 +525,17 @@ function MountainTrail({ summitData, eq }) {
         const pillCenterY = pillRectY + 16; // 32/2 = 16 (half pill height)
         // Force $100K to always be visible (persistent milestone)
         const forceVisible = is100k && achieved;
+        // Progressive sizing: $5M is baseline, each step down 7% bigger
+        const lastIdx = TRAIL_MILESTONES.length - 1;
+        const pillScale = Math.pow(1.03, lastIdx - i);
 
         return (
           <motion.g
             key={ms.label}
             initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
+            animate={{ opacity: 1, scale: pillScale }}
             transition={{ delay, type: 'spring', stiffness: 300, damping: 15 }}
-            style={{ transformOrigin: `${ms.x}px ${ms.y}px` }}
+            style={{ transformOrigin: `${pillCenterX}px ${pillCenterY}px` }}
           >
             {/* ── Next milestone: subtle teal pulse ── */}
             {isNext && (
