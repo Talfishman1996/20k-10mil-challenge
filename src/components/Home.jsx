@@ -56,21 +56,21 @@ const TRAIL_SEGMENTS = [
   },
   {
     // $500K → $1M (controlled left bend — GPT 5.4 v3 moderated)
-    path: 'M 272 230 C 280 210, 151 204, 145 185',
+    path: 'M 272 230 C 280 210, 151 196, 145 177',
     strokeWidth: 3.5,
     glowWidth: 6.5,
     len: 154,
   },
   {
-    // $1M → $5M (taut summit approach — GPT 5.4 v3 moderated)
-    path: 'M 145 185 C 139 166, 226 146, 242 138',
+    // $1M → $5M (curved summit approach)
+    path: 'M 145 177 C 134 154, 215 166, 245 152',
     strokeWidth: 2.5,
     glowWidth: 4.5,
     len: 118,
   },
   {
     // $5M → Temple base (short approach, ends before building)
-    path: 'M 242 138 C 246 132, 242 126, 234 122',
+    path: 'M 245 152 C 253 140, 245 128, 234 122',
     strokeWidth: 1.6,
     glowWidth: 3,
     len: 20,
@@ -86,8 +86,8 @@ const TRAIL_MILESTONES = [
   { label: '$100K', camp: 'Base Camp', value: 100000,   x: 285, y: 325, labelSide: 'right' },
   { label: '$250K', camp: 'Camp I',    value: 250000,   x: 108, y: 275, labelSide: 'left' },
   { label: '$500K', camp: 'Camp II',   value: 500000,   x: 272, y: 230, labelSide: 'right' },
-  { label: '$1M',   camp: 'Camp III',  value: 1000000,  x: 145, y: 185, labelSide: 'left' },
-  { label: '$5M',   camp: 'Camp IV',   value: 5000000,  x: 242, y: 138, labelSide: 'right' },
+  { label: '$1M',   camp: 'Camp III',  value: 1000000,  x: 145, y: 177, labelSide: 'left' },
+  { label: '$5M',   camp: 'Camp IV',   value: 5000000,  x: 245, y: 152, labelSide: 'right' },
 ];
 
 // $10M summit — massive golden text above temple
@@ -335,7 +335,8 @@ function MountainTrail({ summitData, eq }) {
         <linearGradient id="trailFeather" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
           <stop offset="0%" stopColor="black" />
           <stop offset="5%" stopColor="white" />
-          <stop offset="100%" stopColor="white" />
+          <stop offset="93%" stopColor="white" />
+          <stop offset="100%" stopColor="black" />
         </linearGradient>
         <mask id="trailFeatherMask" maskContentUnits="objectBoundingBox">
           <rect x="0" y="0" width="1" height="1" fill="url(#trailFeather)" />
@@ -512,11 +513,11 @@ function MountainTrail({ summitData, eq }) {
         // Per-milestone custom pill offsets (GPT 5.4 spatial analysis)
         // Each offset places pill top-left at (dot.x + ox, dot.y + oy)
         const PILL_OFFSETS = {
-          '$100K': { ox: 1, oy: -48 },      // right of dot, adjusted position
-          '$250K': { ox: -91, oy: -24 },   // left of dot, adjusted
-          '$500K': { ox: 12, oy: -38 },    // right of dot, adjusted
-          '$1M':   { ox: -95, oy: -30 },   // left of dot, pushed up 20 + left 15
-          '$5M':   { ox: 16, oy: -11 },    // right of dot, adjusted
+          '$100K': { ox: 2, oy: -47 },      // right of dot, right 1 down 1
+          '$250K': { ox: -89, oy: -27 },   // left of dot, up 3 right 2
+          '$500K': { ox: 12, oy: -32 },    // right of dot, pushed down 6
+          '$1M':   { ox: -94, oy: -26 },   // left of dot, right 1
+          '$5M':   { ox: 16, oy: -15 },    // right of dot, pushed up 4
         };
         const offset = PILL_OFFSETS[ms.label] || { ox: 14, oy: -16 };
         const pillRectX = ms.x + offset.ox;
