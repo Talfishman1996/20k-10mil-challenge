@@ -38,36 +38,42 @@ const TRAIL_SEGMENTS = [
     path: 'M 195 385 C 217 371, 300 344, 285 325',
     strokeWidth: 5.5,
     glowWidth: 10,
+    len: 124,
   },
   {
     // $100K → $250K (controlled left bend — GPT 5.4 v3 moderated)
     path: 'M 285 325 C 270 306, 111 297, 108 275',
     strokeWidth: 5.5,
     glowWidth: 9.5,
+    len: 196,
   },
   {
     // $250K → $500K (controlled right bend — GPT 5.4 v3 moderated)
     path: 'M 108 275 C 105 253, 264 250, 272 230',
     strokeWidth: 4.5,
     glowWidth: 8,
+    len: 186,
   },
   {
     // $500K → $1M (controlled left bend — GPT 5.4 v3 moderated)
     path: 'M 272 230 C 280 210, 151 204, 145 185',
     strokeWidth: 3.5,
     glowWidth: 6.5,
+    len: 154,
   },
   {
     // $1M → $5M (taut summit approach — GPT 5.4 v3 moderated)
     path: 'M 145 185 C 139 166, 226 146, 242 138',
     strokeWidth: 2.5,
     glowWidth: 4.5,
+    len: 118,
   },
   {
     // $5M → Temple base (short approach, ends before building)
     path: 'M 242 138 C 246 132, 242 126, 234 122',
     strokeWidth: 1.6,
     glowWidth: 3,
+    len: 20,
   },
 
 ];
@@ -239,10 +245,13 @@ function MountainTrail({ summitData, eq }) {
           </feMerge>
         </filter>
 
-        {/* Gradient for completed trail: amber-gold */}
+        {/* Gradient for completed trail: deep ember → white-gold (hotter as it climbs) */}
         <linearGradient id="trailAmber" x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0%" stopColor="#FF9500" />
-          <stop offset="100%" stopColor="#FFB830" />
+          <stop offset="0%" stopColor="#E07000" />
+          <stop offset="35%" stopColor="#FF9500" />
+          <stop offset="65%" stopColor="#FFB830" />
+          <stop offset="85%" stopColor="#FFD866" />
+          <stop offset="100%" stopColor="#FFEDAA" />
         </linearGradient>
 
         {/* Polished gold body — boosted brightness for iPhone visibility */}
@@ -371,6 +380,7 @@ function MountainTrail({ summitData, eq }) {
       ))}
 
       {/* ─── COMPLETED TRAIL — segmented amber with perspective taper ─── */}
+      {/* Sequential draw: constant speed — duration proportional to path length */}
       {TRAIL_SEGMENTS.map((seg, i) => {
         // Determine how much of this segment is completed
         let segProgress = 0;
@@ -379,6 +389,12 @@ function MountainTrail({ summitData, eq }) {
         // else 0
 
         if (segProgress <= 0) return null;
+
+        // Constant-speed timing: duration proportional to segment length
+        const totalLen = TRAIL_SEGMENTS.reduce((s, g) => s + g.len, 0);
+        const totalTime = 2.0; // total seconds for full trail
+        const segDuration = Math.max(0.08, (seg.len / totalLen) * totalTime);
+        const segDelay = 0.15 + TRAIL_SEGMENTS.slice(0, i).reduce((s, g) => s + Math.max(0.08, (g.len / totalLen) * totalTime), 0);
 
         return (
           <g key={`completed-${i}`}>
@@ -394,7 +410,7 @@ function MountainTrail({ summitData, eq }) {
               filter="url(#trailGlowAmber)"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: segProgress }}
-              transition={{ duration: 1.35, delay: 0.15 + i * 0.22, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: segDuration, delay: segDelay, ease: 'linear' }}
             />
             {/* Main amber line */}
             <motion.path
@@ -406,7 +422,7 @@ function MountainTrail({ summitData, eq }) {
               strokeLinejoin="round"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: segProgress }}
-              transition={{ duration: 1.35, delay: 0.15 + i * 0.22, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: segDuration, delay: segDelay, ease: 'linear' }}
             />
             {/* Bright inner core */}
             <motion.path
@@ -419,11 +435,24 @@ function MountainTrail({ summitData, eq }) {
               strokeLinejoin="round"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: segProgress }}
-              transition={{ duration: 1.35, delay: 0.15 + i * 0.22, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: segDuration, delay: segDelay, ease: 'linear' }}
             />
           </g>
         );
       })}
+
+      {/* ─── POST-DRAW SHIMMER — light sweep, only on fully completed segments ─── */}
+      {playerSegIdx > 0 && (
+        <path
+          d={TRAIL_SEGMENTS.slice(0, playerSegIdx).map(s => s.path).join(' ')}
+          fill="none"
+          stroke="#FFFDE7"
+          strokeWidth={2}
+          strokeLinecap="round"
+          className="trail-shimmer"
+          style={{ pointerEvents: 'none' }}
+        />
+      )}
 
       {/* ─── MILESTONES ($100K–$5M) ─── */}
       {TRAIL_MILESTONES.map((ms, i) => {
@@ -431,15 +460,18 @@ function MountainTrail({ summitData, eq }) {
         const achieved = mData?.achieved;
         const isNext = mData?.isNext;
         const is100k = ms.label === '$100K';
-        const delay = 0.4 + i * 0.18;
+        // Sync milestone pop-in with trail reaching it (end of segment i)
+        const totalLen = TRAIL_SEGMENTS.reduce((s, g) => s + g.len, 0);
+        const totalTime = 2.0;
+        const delay = 0.15 + TRAIL_SEGMENTS.slice(0, i + 1).reduce((s, g) => s + Math.max(0.08, (g.len / totalLen) * totalTime), 0);
         // Per-milestone custom pill offsets (GPT 5.4 spatial analysis)
         // Each offset places pill top-left at (dot.x + ox, dot.y + oy)
         const PILL_OFFSETS = {
-          '$100K': { ox: 18, oy: -8 },     // right of dot, visible above hero text
-          '$250K': { ox: -82, oy: -4 },    // left of dot, near edge
-          '$500K': { ox: 22, oy: -22 },    // right of dot, pulled up
-          '$1M':   { ox: -80, oy: -10 },   // left of dot
-          '$5M':   { ox: 26, oy: -12 },    // right of dot, slightly up
+          '$100K': { ox: 1, oy: -48 },      // right of dot, adjusted position
+          '$250K': { ox: -93, oy: -24 },   // left of dot, adjusted
+          '$500K': { ox: 19, oy: -30 },    // right of dot, adjusted
+          '$1M':   { ox: -95, oy: -30 },   // left of dot, pushed up 20 + left 15
+          '$5M':   { ox: 21, oy: -12 },    // right of dot, pushed left 5
         };
         const offset = PILL_OFFSETS[ms.label] || { ox: 14, oy: -16 };
         const pillRectX = ms.x + offset.ox;
@@ -454,7 +486,7 @@ function MountainTrail({ summitData, eq }) {
             key={ms.label}
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay, duration: 0.5, ease: 'backOut' }}
+            transition={{ delay, type: 'spring', stiffness: 300, damping: 15 }}
             style={{ transformOrigin: `${ms.x}px ${ms.y}px` }}
           >
             {/* ── Next milestone: subtle teal pulse ── */}
@@ -484,14 +516,7 @@ function MountainTrail({ summitData, eq }) {
               opacity={achieved ? 0.9 : isNext ? 0.85 : 0.4}
             />
 
-            {/* ── Achieved: small golden check inside dot ── */}
-            {achieved && (
-              <text
-                x={ms.x} y={ms.y + 1}
-                textAnchor="middle" dominantBaseline="central"
-                fill="#0a0e14" fontSize={5} fontWeight={800}
-              >✓</text>
-            )}
+            {/* ── Achieved dot is solid gold, no inner icon ── */}
 
             {/* ── Compact pill label — uniform visibility across all states ── */}
             <g opacity={!achieved && !isNext ? 0.82 : forceVisible ? 0.88 : 1}>
@@ -691,11 +716,11 @@ export default function Home({ trades, settings, onOpenTradeEntry }) {
       {/* ── CSS keyframes for summit shimmer & ring pulse ── */}
       <style>{`
         @keyframes summitShimmer {
-          0%   { transform: translateX(-72px); opacity: 0; }
+          0%   { transform: translateX(-36px); opacity: 0; }
           12%  { opacity: 0; }
           28%  { opacity: 0.78; }
           45%  { opacity: 0.22; }
-          100% { transform: translateX(92px); opacity: 0; }
+          100% { transform: translateX(48px); opacity: 0; }
         }
         .money-shimmer {
           animation: summitShimmer 4.8s ease-in-out infinite;
@@ -721,6 +746,72 @@ export default function Home({ trades, settings, onOpenTradeEntry }) {
           0%, 100% { transform: scaleY(1); opacity: 0.9; }
           50% { transform: scaleY(1.12); opacity: 1; }
         }
+        @keyframes trailShimmer {
+          0% { stroke-dashoffset: 800; opacity: 0; }
+          10% { opacity: 0.6; }
+          90% { opacity: 0.6; }
+          100% { stroke-dashoffset: 0; opacity: 0; }
+        }
+        .trail-shimmer {
+          animation: trailShimmer 3s ease-in-out 2.5s infinite;
+          stroke-dasharray: 30 770;
+        }
+
+        /* ── Divine Storm: God Rays — phased crossfade ── */
+        @keyframes godRayCycle {
+          0%   { opacity: 0.02; transform: rotate(-6deg); }
+          25%  { opacity: 0.10; transform: rotate(0deg); }
+          50%  { opacity: 0.02; transform: rotate(6deg); }
+          75%  { opacity: 0.10; transform: rotate(0deg); }
+          100% { opacity: 0.02; transform: rotate(-6deg); }
+        }
+        .god-ray {
+          position: absolute;
+          top: 0;
+          transform-origin: 50% 0%;
+          background: linear-gradient(to bottom, rgba(255,220,130,0.5) 0%, rgba(255,200,80,0.08) 40%, transparent 100%);
+          pointer-events: none;
+          filter: blur(8px);
+          animation: godRayCycle 10s ease-in-out infinite;
+        }
+        .god-ray-1 { left: 42%; width: 16%; height: 70%; animation-delay: 0s; }
+        .god-ray-2 { left: 50%; width: 12%; height: 60%; animation-delay: -3.33s; }
+        .god-ray-3 { left: 36%; width: 14%; height: 65%; animation-delay: -6.66s; }
+
+        /* ── Divine Storm: Luminous Particle Fall — constrained to temple area ── */
+        @keyframes particleFall {
+          0%   { transform: translateY(-5px) translateX(0); opacity: 0; }
+          15%  { opacity: 0.35; }
+          85%  { opacity: 0.25; }
+          100% { transform: translateY(100px) translateX(12px); opacity: 0; }
+        }
+        .divine-particle {
+          position: absolute;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(255,230,160,0.45) 0%, rgba(255,200,80,0.15) 60%, transparent 100%);
+          pointer-events: none;
+        }
+
+        /* ── Divine Storm: Golden Cloud Flash ── */
+        @keyframes divineFlash {
+          0%, 90%, 100% { opacity: 0; }
+          93% { opacity: 0.12; }
+          95% { opacity: 0.06; }
+          97% { opacity: 0.10; }
+        }
+        .divine-flash {
+          position: absolute;
+          top: 0;
+          left: 10%;
+          width: 80%;
+          height: 45%;
+          background: radial-gradient(ellipse at 50% 30%, rgba(255,215,120,0.4) 0%, rgba(255,190,60,0.1) 40%, transparent 70%);
+          pointer-events: none;
+          filter: blur(20px);
+        }
+        .divine-flash-1 { animation: divineFlash 5s ease-in-out infinite; }
+        .divine-flash-2 { animation: divineFlash 6.5s ease-in-out 2.5s infinite; }
+        .divine-flash-3 { animation: divineFlash 4.5s ease-in-out 4s infinite; }
         input[type="range"] {
           -webkit-appearance: none;
           appearance: none;
@@ -777,6 +868,38 @@ export default function Home({ trades, settings, onOpenTradeEntry }) {
             background: 'linear-gradient(to bottom, rgba(4,8,16,0.10) 0%, rgba(4,8,16,0) 28%)',
           }}
         />
+
+        {/* ── Divine Storm: Golden God Rays from Summit ── */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 2 }}>
+          <div className="god-ray god-ray-1" />
+          <div className="god-ray god-ray-2" />
+          <div className="god-ray god-ray-3" />
+        </div>
+
+        {/* ── Divine Storm: Luminous Particle Fall — full width, above building line ── */}
+        <div className="absolute overflow-hidden pointer-events-none" style={{ zIndex: 3, top: 0, left: 0, width: '100%', height: '42%' }}>
+          {[...Array(16)].map((_, i) => (
+            <div
+              key={`particle-${i}`}
+              className="divine-particle"
+              style={{
+                left: `${3 + (i * 6.1) % 90}%`,
+                top: `${-2 + (i * 4) % 12}%`,
+                width: `${3 + (i % 3)}px`,
+                height: `${3 + (i % 3)}px`,
+                animation: `particleFall ${5 + (i % 5) * 1.2}s linear ${i * 0.6}s infinite`,
+                opacity: 0,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* ── Divine Storm: Golden Cloud Flashes ── */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 1 }}>
+          <div className="divine-flash divine-flash-1" />
+          <div className="divine-flash divine-flash-2" />
+          <div className="divine-flash divine-flash-3" />
+        </div>
 
         {/* ── SVG Trail Overlay ── */}
         <div className="absolute inset-0 z-10">
